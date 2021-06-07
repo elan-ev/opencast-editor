@@ -40,7 +40,7 @@ const workflowPostSlice = createSlice({
     builder.addCase(
       postVideoInformation.rejected, (state, action) => {
         state.status = 'failed'
-        state.error = action.error.message
+        state.error = action.error.message ? JSON.parse(action.error.message) : ""
     })
   }
 })
@@ -71,7 +71,7 @@ export const convertSegments = (segments: Segment[]) => {
 
 export const selectStatus = (state: { workflowPostState: { status: httpRequestState["status"] } }) =>
   state.workflowPostState.status
-export const selectError = (state: { workflowPostAndProcessState: { error: httpRequestState["error"] } }) =>
-  state.workflowPostAndProcessState.error
+export const selectError = (state: { workflowPostState: { error: httpRequestState["error"] } }) =>
+  state.workflowPostState.error
 
 export default workflowPostSlice.reducer

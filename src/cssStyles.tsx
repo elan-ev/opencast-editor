@@ -121,18 +121,3 @@ export const ariaLive = css({
   width: '1px',
   overflow: 'hidden',
 })
-
-/**
- * CSS for displaying of errors
- */
-export const errorBoxStyle = (errorStatus: boolean) => {
-  return (
-    css({
-      ...(!errorStatus) && {display: "none"},
-      borderColor: 'red',
-      borderStyle: 'dashed',
-      fontWeight: 'bold',
-      padding: '10px',
-    })
-  );
-}

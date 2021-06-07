@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 
 import { css } from '@emotion/react'
-import { errorBoxStyle } from '../cssStyles'
 
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -24,6 +23,7 @@ import './../i18n/config';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import ErrorBox from "./ErrorBox";
 import { DateTime as LuxonDateTime} from "luxon";
 
 import { settings } from '../config'
@@ -633,10 +633,7 @@ const Metadata: React.FC<{}> = () => {
               form.reset()
             }} css={metadataStyle}>
 
-              <div css={errorBoxStyle(getStatus === "failed")} role="alert">
-                <span>A problem occurred during communication with Opencast.</span><br />
-                {getError ? "Details: " + getError : "No error details are available."}<br />
-              </div>
+              <ErrorBox showBox={getStatus === "failed"} errorMessage={t("metadata.get-error")} errorDetails={getError} />
 
               {catalogs.map((catalog, i) => {
                 // Render catalog and its fields based on config settings
@@ -676,11 +673,7 @@ const Metadata: React.FC<{}> = () => {
                 </button>
               </div> */}
 
-              <div css={errorBoxStyle(postStatus === "failed")} role="alert">
-                <span>A problem occurred during communication with Opencast. <br />
-                      Changes could not be saved to Opencast.</span><br />
-                {postError ? "Details: " + postError : "No error details are available."}<br />
-              </div>
+              <ErrorBox showBox={postStatus === "failed"} errorMessage={t("metadata.save-error")} errorDetails={postError} />
 
               {/* For debugging the forms current values*/}
               {/* <FormSpy subscription={{ values: true }}>

@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { httpRequestState } from '../types';
 
 interface error {
   error: boolean,
   errorMessage: string,
-  errorDetails: string | undefined,
+  errorDetails: httpRequestState["error"]
 }
 
 const initialState: error = {

@@ -49,10 +49,10 @@ export async function client(endpoint, { body, ...customConfig } = {}) {
     }
     throw new Error(response.statusText)
   } catch (err) {
-    return Promise.reject(response.status ?
-        "Status " + response.status + ": " + text :
-        err.message
-      )
+    return Promise.reject(JSON.stringify({
+      status: response.status,
+      text: text ? text : err.message
+    }))
   }
 }
 

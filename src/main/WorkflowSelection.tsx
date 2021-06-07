@@ -1,7 +1,7 @@
 import React from "react";
 
 import { css } from '@emotion/react'
-import { basicButtonStyle, backOrContinueStyle, errorBoxStyle, flexGapReplacementStyle } from '../cssStyles'
+import { basicButtonStyle, backOrContinueStyle, flexGapReplacementStyle } from '../cssStyles'
 
 import { useDispatch, useSelector } from 'react-redux';
 import { selectWorkflows, selectSelectedWorkflowIndex, setSelectedWorkflowIndex } from '../redux/videoSlice'
@@ -19,6 +19,7 @@ import { EmotionJSX } from "@emotion/react/types/jsx-namespace";
 import './../i18n/config';
 import { useTranslation } from 'react-i18next';
 import { Trans } from "react-i18next";
+import ErrorBox from "./ErrorBox";
 
 /**
  * Allows the user to select a workflow
@@ -95,10 +96,7 @@ const WorkflowSelection : React.FC<{}> = () => {
           {/* <PageButton pageNumber={2} label="Continue" iconName={faChevronRight}/> */}
           {nextButton}
         </div>
-        <div css={errorBoxStyle(errorStatus === "failed")} role="alert">
-          <span>{t("various.error-text")}</span><br />
-          {errorMessage ? t("various.error-details-text", {errorMessage: postAndProcessError}) : t("various.error-noDetails-text")}<br/>
-        </div>
+        <ErrorBox showBox={errorStatus === "failed"} errorMessage={t("workflowSelection.startProcessing-error")} errorDetails={postAndProcessError}/>
       </div>
     );
   }

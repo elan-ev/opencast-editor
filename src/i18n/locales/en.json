@@ -32,7 +32,7 @@
       "duration-aria": "Duration",
       "time-aria": "Current time",
       "comError-text": "A problem occurred during communication with Opencast.",
-      "loadError-text": "An error has occurred loading this video.",
+      "loadError-text": "This video could not be loaded.",
       "title-tooltip": "Video Title",
       "presenter-tooltip": "Video Presenters",
       "controls-tooltip": "Video Controls"
@@ -53,7 +53,8 @@
       "confirmButton-failed-tooltip": "Save failed",
       "info-text": "The video will not be processed but all cutting information will be stored in Opencast. You can continue your edit later.",
       "success-tooltip-aria": "Saved successfully",
-      "saveArea-tooltip": "Save Area"
+      "saveArea-tooltip": "Save Area",
+      "save-error": "Your changes could not be saved."
     },
 
     "discard": {
@@ -79,7 +80,8 @@
       "startProcessing-button": "Start processing",
       "back-button": "Take me back",
       "selectWF-button": "Click to select this workflow",
-      "selectWF-button-aria": "Press to select the workflow: {{stateName}}\n"
+      "selectWF-button-aria": "Press to select the workflow: {{stateName}}\n",
+      "startProcessing-error": "Your changes could not be processed."
     },
 
     "timeline": {
@@ -103,6 +105,8 @@
       "reset-button": "Reset",
       "reset-button-tooltip": "Undo all your changes",
       "submit-helpertext": "Make changes as you like, then hit the {{buttonName}} button.\nNote that you will still have to start processing for your changes to take effect.",
+      "get-error": "Could not fetch metadata from Opencast.",
+      "save-error": "Your changes to metadata could not be saved to Opencast.",
       "validation": {
         "required": "Required",
         "duration-format": "Format must be HH:MM:SS",
@@ -176,7 +180,8 @@
     },
 
     "various": {
-      "error-details-text": "Details: {{errorMessage}}\n",
+      "error-header-text": "Error: ",
+      "error-details-text": "Details: {{errorMessage}}",
       "error-noDetails-text": "No error details are available.",
       "error-text": "An error has occurred. Please wait a bit and try again.",
       "goBack-button": "No, take me back"

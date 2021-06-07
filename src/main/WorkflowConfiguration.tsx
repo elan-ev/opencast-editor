@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 import { css } from '@emotion/react'
-import { basicButtonStyle, backOrContinueStyle, errorBoxStyle, flexGapReplacementStyle } from '../cssStyles'
+import { basicButtonStyle, backOrContinueStyle, flexGapReplacementStyle } from '../cssStyles'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTools} from "@fortawesome/free-solid-svg-icons";
@@ -16,6 +16,7 @@ import { setEnd } from "../redux/endSlice";
 
 import './../i18n/config';
 import { useTranslation } from 'react-i18next';
+import ErrorBox from "./ErrorBox";
 import { postMetadata, selectPostError, selectPostStatus, setHasChanges as metadataSetHasChanges } from "../redux/metadataSlice";
 
 /**
@@ -48,14 +49,8 @@ const WorkflowConfiguration : React.FC<{}> = () => {
         <PageButton pageNumber={1} label={t("various.goBack-button")} iconName={faChevronLeft}/>
         <SaveAndProcessButton text={t("workflowConfig.confirm-button")}/>
       </div>
-      <div css={errorBoxStyle(postAndProcessWorkflowStatus === "failed")} role="alert">
-        <span>{t("various.error-text")}</span><br />
-        {postAndProcessError ? t("various.error-details-text", {errorMessage: postAndProcessError}) : t("various.error-noDetails-text")}<br/>
-      </div>
-      <div css={errorBoxStyle(postMetadataStatus === "failed")} role="alert">
-        <span>{t("various.error-text")}</span><br />
-        {postMetadataError ? t("various.error-details-text", {errorMessage: postMetadataError}) : t("various.error-noDetails-text")}<br />
-      </div>
+      <ErrorBox showBox={postAndProcessWorkflowStatus === "failed"} errorMessage={t("various.error-text")} errorDetails={postAndProcessError}/>
+      <ErrorBox showBox={postMetadataStatus === "failed"} errorMessage={t("various.error-text")} errorDetails={postMetadataError}/>
     </div>
   );
 }

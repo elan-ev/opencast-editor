@@ -193,7 +193,7 @@ export const videoSlice = createSlice({
     builder.addCase(
       fetchVideoInformation.rejected, (state, action) => {
         state.status = 'failed'
-        state.error = action.error.message
+        state.error = action.error.message ? JSON.parse(action.error.message) : ""
     })
   }
 })

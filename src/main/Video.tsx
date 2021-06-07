@@ -27,6 +27,7 @@ import './../i18n/config';
 import { useTranslation } from 'react-i18next';
 import { selectTitleFromEpisodeDc } from "../redux/metadataSlice";
 import { setError } from "../redux/errorSlice";
+import ErrorBox from "./ErrorBox";
 
 /**
  * Container for the videos and their controls
@@ -174,14 +175,6 @@ const VideoPlayer: React.FC<{dataKey: number, url: string, isPrimary: boolean}> 
     file: { attributes: { tabIndex: '-1' }}
   }
 
-  const errorBoxStyle = css({
-    ...(!errorState) && {display: "none"},
-    borderColor: 'red',
-    borderStyle: 'dashed',
-    fontWeight: 'bold',
-    padding: '10px',
-  })
-
   const playerWrapper = css({
     position: 'relative',
     width: '100%',
@@ -218,9 +211,7 @@ const VideoPlayer: React.FC<{dataKey: number, url: string, isPrimary: boolean}> 
       );
     } else {
       return (
-        <div css={errorBoxStyle} role="alert">
-          <span>{t("video.loadError-text")} </span>
-        </div>
+        <ErrorBox showBox={true} errorMessage={t("video.loadError-text")} errorDetails={""} />
       );
     }
   }

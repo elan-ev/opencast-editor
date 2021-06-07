@@ -43,5 +43,5 @@ export enum MainMenuStateNames {
 
 export interface httpRequestState {
   status: 'idle' | 'loading' | 'success' | 'failed',
-  error: string | undefined
+  error: {status: number, text: string} | string | undefined
 }
