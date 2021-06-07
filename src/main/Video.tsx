@@ -42,6 +42,7 @@ const Video: React.FC<{}> = () => {
   const videoCount = useSelector(selectVideoCount)
   const videoURLStatus = useSelector((state: { videoState: { status: httpRequestState["status"] } }) => state.videoState.status);
   const error = useSelector((state: { videoState: { error: httpRequestState["error"] } }) => state.videoState.error)
+  const duration = useSelector(selectDuration)
 
   // Try to fetch URL from external API
   useEffect(() => {
@@ -49,8 +50,12 @@ const Video: React.FC<{}> = () => {
       dispatch(fetchVideoInformation())
     } else if (videoURLStatus === 'failed') {
       dispatch(setError({error: true, errorMessage: t("video.comError-text"), errorDetails: error}))
+    } else if (videoURLStatus === 'success') {
+      if (!duration) {
+        dispatch(setError({error: true, errorMessage: t("durationError-text"), errorDetails: error}))
+      }
     }
-  }, [videoURLStatus, dispatch, error, t])
+  }, [videoURLStatus, dispatch, error, t, duration])
 
   // Update based on current fetching status
   // let content
