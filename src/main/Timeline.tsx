@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Segment, httpRequestState, MainMenuStateNames } from '../types'
 import {
   selectIsPlaying, selectCurrentlyAt, selectSegments, selectActiveSegmentIndex, selectDuration,
-  setIsPlaying, selectVideoURL, setCurrentlyAt, setClickTriggered
+  setIsPlaying, selectVideoURL, setCurrentlyAt, setClickTriggered, dragSegmentBorder
 } from '../redux/videoSlice'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,6 +24,7 @@ import { scrubberKeyMap } from '../globalKeys';
 import './../i18n/config';
 import { useTranslation } from 'react-i18next';
 import { selectMainMenuState } from '../redux/mainMenuSlice';
+import { EmotionJSX } from '@emotion/react/types/jsx-namespace';
 
 /**
  * A container for visualizing the cutting of the video, as well as for controlling
@@ -39,6 +40,8 @@ const Timeline: React.FC<{}> = () => {
 
   const { ref, width = 1, } = useResizeObserver<HTMLDivElement>();
 
+  const [drag, setDrag] = useState(false) // If mouse event is click or drag
+
   const timelineStyle = css({
     position: 'relative',     // Need to set position for Draggable bounds to work
     height: '250px',
@@ -47,17 +50,23 @@ const Timeline: React.FC<{}> = () => {
 
   // Update the current time based on the position clicked on the timeline
   const setCurrentlyAtToClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    let rect = e.currentTarget.getBoundingClientRect()
-    let offsetX = e.clientX - rect.left
-    dispatch(setClickTriggered(true))
-    dispatch(setCurrentlyAt((offsetX / width) * (duration)))
+    if (!drag) {
+      let rect = e.currentTarget.getBoundingClientRect()
+      let offsetX = e.clientX - rect.left
+      dispatch(setClickTriggered(true))
+      dispatch(setCurrentlyAt((offsetX / width) * (duration)))
+    }
   }
 
   return (
-  <div ref={ref} css={timelineStyle} title="Timeline" onMouseDown={e => setCurrentlyAtToClick(e)}>
+  <div ref={ref} css={timelineStyle} title="Timeline"
+    onMouseDown={e => setDrag(false)}
+    onMouseMove={e => setDrag(true)}
+    onMouseUp={e => setCurrentlyAtToClick(e)}>
     <Scrubber timelineWidth={width}/>
     <div css={{height: '230px'}} >
       <Waveforms />
+      <SegmentsGaps timelineWidth={width}/>
       <SegmentsList timelineWidth={width}/>
     </div>
   </div>
@@ -313,6 +322,111 @@ const SegmentsList: React.FC<{timelineWidth: number}> = ({timelineWidth}) => {
     </div>
   );
 };
+
+/**
+ * Creates draggable elements at the end of each segment
+ */
+const SegmentsGaps: React.FC<{timelineWidth: number}> = ({timelineWidth}) => {
+
+  // Init redux variables
+  const segments = useSelector(selectSegments)
+
+  const renderedSegments = () => {
+    const gaps: EmotionJSX.Element[] = []
+    for (var index = 0; index < segments.length - 1; index++) {
+        gaps.push(<SegmentsGap key={segments[index].id} timelineWidth={timelineWidth} segment={segments[index]} nextSegment={segments[index + 1]} index={index} />)
+    }
+    return gaps
+  }
+
+  const segmentsStyle = css({
+    width: '100%',
+    position: "absolute" as "absolute",
+    height: '230px',
+    paddingTop: '10px',
+  })
+
+  return (
+    <div css={segmentsStyle}>
+      {renderedSegments()}
+    </div>
+  );
+}
+
+/**
+ * Draggable element at the end of a segment
+ * Dragging this should look like the segment border is being moved
+ */
+const SegmentsGap: React.FC<{timelineWidth: number, segment: Segment, nextSegment: Segment, index: number}> = ({timelineWidth, segment, nextSegment, index}) => {
+
+  // Init redux variables
+  const dispatch = useDispatch();
+  const duration = useSelector(selectDuration)
+
+  // Passing a ref somehow breaks the draggable component here
+  // const nodeRef = React.useRef(null); // For supressing "ReactDOM.findDOMNode() is deprecated" warning
+
+  const [showLine, setShowLine] = useState(false)
+  const [controlledPosition, setControlledPosition] = useState({x: 0,y: 0,});
+  const [isGrabbed, setIsGrabbed] = useState(false)
+
+
+  const onStartDrag = () => {
+    setShowLine(true)
+    setIsGrabbed(true)
+  }
+
+  const onStopDrag = (e: any, position: any) => {
+    setShowLine(false)
+    setIsGrabbed(false)
+
+    const time = ((position.node.offsetLeft + position.x) / timelineWidth) * (duration)
+    console.log("position: " + position.toString())
+    console.log("Time: " + time)
+    dispatch(dragSegmentBorder({index, time}))
+
+    setControlledPosition({x:0, y:0})
+  }
+
+  const gapStyle = css({
+    position: 'absolute',
+    left: (1 - ((duration - segment.end) / duration)) * 100 + '%',
+    width: '0px',
+    height: '230px',
+    zIndex: 2,
+  })
+
+  const grabStyle = css({
+    // background: showLine ? "red" : "blue",
+    width: '4px',
+    marginLeft: '-2px',
+    height: '230px',
+    cursor: isGrabbed ? "grabbing" : "grab",
+  })
+
+  const showLineStyle = css({
+    background: 'white',
+    width: '1px',
+    height: '100%',
+  })
+
+  return (
+      <Draggable
+      onStart={onStartDrag}
+      onStop={onStopDrag}
+      axis="x"
+      bounds="parent"
+      position={controlledPosition}
+
+      // nodeRef={nodeRef}
+      >
+        <div css={gapStyle}>
+          {showLine ? <div css={showLineStyle}></div> : false}
+          <div css={grabStyle}></div>
+        </div>
+      </Draggable>
+  );
+}
 
 /**
  * Generates waveform images and displays them

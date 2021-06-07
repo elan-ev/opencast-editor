@@ -112,6 +112,8 @@ export const videoSlice = createSlice({
       state.hasChanges = action.payload
     },
     cut: (state) => {
+      updateActiveSegment(state)
+
       // If we're exactly between two segments, we can't split the current segment
       if (state.segments[state.activeSegmentIndex].start === state.currentlyAt ||
           state.segments[state.activeSegmentIndex].end === state.currentlyAt ) {
@@ -148,6 +150,36 @@ export const videoSlice = createSlice({
       mergeSegments(state, state.activeSegmentIndex, state.activeSegmentIndex + 1)
       state.hasChanges = true
     },
+    dragSegmentBorder: (state, action: PayloadAction<any>) => {
+      // Index of the segment left from the border
+      const segmentIndex = action.payload.index
+      // New position
+      const newEndPos = action.payload.time
+
+      // If new endPos smaller than startPos, delete yourself
+      // Maybe disallow moving further than startPos?
+      if (state.segments[segmentIndex].start >= newEndPos) {
+        mergeSegments(state, segmentIndex, segmentIndex - 1)
+        // Edge case: If segment 0, merge right (instead of left)
+        if (segmentIndex === 0) {
+          mergeSegments(state, segmentIndex, segmentIndex + 1)
+        }
+      }
+
+      // If new endPos bigger than endPos of next segment, delete yourself
+      // Maybe disallow moving further than endPos?
+      else if (state.segments[segmentIndex + 1].end <= newEndPos) {
+        mergeSegments(state, segmentIndex, segmentIndex + 1)
+      }
+
+      else {
+      // Update segment.end
+      state.segments[segmentIndex].end = newEndPos
+
+      // Update next segment.start
+      state.segments[segmentIndex + 1].start = newEndPos
+      }
+    }
   },
   // For Async Requests
   extraReducers: builder => {
@@ -285,8 +317,8 @@ const calculateTotalAspectRatio = (aspectRatios: video["aspectRatios"]) => {
 }
 
 export const { setIsPlaying, setIsPlayPreview, setCurrentlyAt, setCurrentlyAtInSeconds, addSegment, setAspectRatio,
-  setHasChanges, cut, markAsDeletedOrAlive, setSelectedWorkflowIndex, mergeLeft, mergeRight, setPreviewTriggered,
-  setClickTriggered } = videoSlice.actions
+  setHasChanges, cut, markAsDeletedOrAlive, setSelectedWorkflowIndex, mergeLeft, mergeRight, dragSegmentBorder,
+  setPreviewTriggered, setClickTriggered } = videoSlice.actions
 
 // Export selectors
 // Selectors mainly pertaining to the video state
