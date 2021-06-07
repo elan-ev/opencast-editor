@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Segment, httpRequestState, MainMenuStateNames } from '../types'
 import {
   selectIsPlaying, selectCurrentlyAt, selectSegments, selectActiveSegmentIndex, selectDuration,
-  setIsPlaying, selectVideoURL, setCurrentlyAt, setClickTriggered
+  setIsPlaying, selectVideoURL, setCurrentlyAt, setClickTriggered, selectIsCurrentSegmentAlive
 } from '../redux/videoSlice'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -78,7 +78,7 @@ const Scrubber: React.FC<{timelineWidth: number}> = ({timelineWidth}) => {
   const currentlyAt = useSelector(selectCurrentlyAt)
   const duration = useSelector(selectDuration)
   const activeSegmentIndex = useSelector(selectActiveSegmentIndex)  // For ARIA information display
-  const segments = useSelector(selectSegments)                      // For ARIA information display
+  const isCurrentSegmentAlive = useSelector(selectIsCurrentSegmentAlive) // For ARIA information display
   const mainMenuState = useSelector(selectMainMenuState)            // For hotkey enabling/disabling
 
   // Init state variables
@@ -221,8 +221,9 @@ const Scrubber: React.FC<{timelineWidth: number}> = ({timelineWidth}) => {
 
             <div css={scrubberDragHandleStyle} aria-grabbed={isGrabbed}
               aria-label={t("timeline.scrubber-text-aria",
-                         {currentTime: convertMsToReadableString(currentlyAt), segment: activeSegmentIndex,
-                          segmentStatus: (segments[activeSegmentIndex].deleted ? "Deleted" : "Alive"),
+                         {currentTime: convertMsToReadableString(currentlyAt),
+                          segment: activeSegmentIndex,
+                          segmentStatus: isCurrentSegmentAlive ? "Alive" : "Deleted",
                           moveLeft: scrubberKeyMap[handlers.left.name],
                           moveRight: scrubberKeyMap[handlers.right.name],
                           increase: scrubberKeyMap[handlers.increase.name],

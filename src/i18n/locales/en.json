@@ -33,6 +33,8 @@
       "time-aria": "Current time",
       "comError-text": "A problem occurred during communication with Opencast.",
       "loadError-text": "An error has occurred loading this video.",
+      "durationError-text": "Failed to determine the video duration.",
+      "durationError-details": "The determined duration is: {{duration}}",
       "title-tooltip": "Video Title",
       "presenter-tooltip": "Video Presenters",
       "controls-tooltip": "Video Controls"
