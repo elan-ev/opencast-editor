@@ -84,7 +84,7 @@
     "@types/lodash": "^4.14.170",
     "@types/luxon": "^1.26.5",
     "@types/react-beforeunload": "^2.1.0",
-    "@types/react-select": "^4.0.15",
+    "@types/react-select": "^4.0.16",
     "redux-devtools": "^3.7.0",
     "use-resize-observer": "^7.0.0"
   }
