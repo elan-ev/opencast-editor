@@ -82,7 +82,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.170",
-    "@types/luxon": "^1.26.5",
+    "@types/luxon": "^1.27.0",
     "@types/react-beforeunload": "^2.1.0",
     "@types/react-select": "^4.0.15",
     "redux-devtools": "^3.7.0",
