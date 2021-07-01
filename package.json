@@ -35,7 +35,7 @@
     "i18next-browser-languagedetector": "^6.1.1",
     "lodash.clonedeep": "^4.5.0",
     "luxon": "^1.27.0",
-    "mui-rff": "^3.0.7",
+    "mui-rff": "^3.0.9",
     "react": "^17.0.2",
     "react-app-rewired": "^2.1.8",
     "react-device-detect": "^1.17.0",
